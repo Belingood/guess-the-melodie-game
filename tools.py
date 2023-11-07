@@ -1,3 +1,5 @@
+PLAYERS_MIN_COUNT = 2
+PLAYERS_MAX_COUNT = 3
 QUIT_WORD = 'quit'
 STOP_WORD = 'stop'
 NEXT_MELODY_TEXT = 'next'
@@ -11,6 +13,7 @@ WIN_POINT = 3
 player_registration_text = 'Please registr all the players. Input “stop” to finish registration.'
 allowed_name_notice = 'Use only letters (at least 1) and characters of space and dash.'
 use_letters_text = 'Please use only letters and characters of space and dash.'
+wrong_players_count_text = f'The players count must be from {PLAYERS_MIN_COUNT} to {PLAYERS_MAX_COUNT}.'
 tap_to_game_starting_text = 'Input whatever to START THE GAME or input “quit” to finish the game'
 stop_melodie_text = '🎵 🎶 If anyone guess this melody press ENTER 🎵 🎶: '
 player_already_answered_text = 'This player already answered, please input another player'

@@ -57,7 +57,6 @@ class GTMGame:
                 self.pl_pool.current_pool.clear()
 
             else:
-
                 self.pl_pool.clear_players_scores()
 
         while isinstance(self.player_data, tuple):
@@ -68,8 +67,21 @@ class GTMGame:
                 self.pl_pool.new_player_registration(*self.player_data)
                 self.info.player_greeting(*self.player_data)
 
-        if self.player_data == tools.QUIT_WORD:
-            return tools.QUIT_WORD
+            if len(self.pl_pool.current_pool) == tools.PLAYERS_MAX_COUNT:
+                # Players pool overload.
+                break
+
+            else:
+                # It may be only the “stop” or “quit” string.
+
+                if self.player_data == tools.QUIT_WORD:
+                    # “quit” case
+                    return tools.QUIT_WORD
+
+                if len(self.pl_pool.current_pool) < tools.PLAYERS_MIN_COUNT:
+                    # “stop” case
+                    print(tools.wrong_players_count_text)
+                    self.player_data = ()
 
         self.info.end_registration_message(
             player_count=len(self.pl_pool.current_pool)
@@ -127,17 +139,21 @@ class GTMGame:
                 self.pl_pool.excluded_players
             )
 
-            for user_feedback in (
-                    self.mus_player.track_playback(self.input_deliver),
-                    self.get_check_inputting()
-            ):
-                if user_feedback in (tools.NEXT_MELODY_TEXT, tools.QUIT_WORD):
+            user_input_data = None
+
+            for i in range(2):
+
+                match i:
+                    case 0: user_input_data = self.mus_player.track_playback(self.input_deliver)
+                    case 1: user_input_data = self.get_check_inputting()
+
+                if user_input_data in (tools.NEXT_MELODY_TEXT, tools.QUIT_WORD):
                     self.mus_player.track_stop_unload()
-                    return user_feedback
+                    return user_input_data
 
-            if isinstance(user_feedback, tuple):
+            if isinstance(user_input_data, tuple):
 
-                checking_result = self.guess_checking(user_feedback)
+                checking_result = self.guess_checking(user_input_data)
 
                 if checking_result:
                     return checking_result
@@ -204,7 +220,7 @@ class GTMGame:
                     print(not_correct_number)
                     continue
 
-                # If an inputted number is allowed then go to the next loop.
+                # If an inputted number is allowed then go to the next for-loop.
                 break
 
             # If data was cast successful and the number is correct
