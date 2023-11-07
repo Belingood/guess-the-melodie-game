@@ -24,18 +24,17 @@ class GTMGame:
 
         while True:
 
-            # Game starting/restarting.
             match self.new_round_initiator():
-                case 'quit': return self.info.game_over_message()
+                case tools.QUIT_WORD: return self.info.game_over_message()
 
             while True:
 
                 match self.new_melodie_starting():
-                    case 'round': break
+                    case tools.NEW_ROUND_TEXT: break
 
                 match self.new_try_to_guess():
-                    case 'quit': return self.info.game_over_message()
-                    case 'next': continue
+                    case tools.QUIT_WORD: return self.info.game_over_message()
+                    case tools.NEXT_MELODY_TEXT: continue
 
     def new_round_initiator(self):
         """
@@ -49,15 +48,15 @@ class GTMGame:
                 input(f'{tools.need_new_pool_text}: ')
             )
 
+            if need_new_pool == tools.QUIT_WORD:
+                return tools.QUIT_WORD
+
             if need_new_pool == tools.NEW_POOL_TEXT:
 
                 self.player_data = ()
                 self.pl_pool.current_pool.clear()
 
             else:
-
-                if need_new_pool in tools.QUIT_WORDS:
-                    return 'quit'
 
                 self.pl_pool.clear_players_scores()
 
@@ -69,8 +68,8 @@ class GTMGame:
                 self.pl_pool.new_player_registration(*self.player_data)
                 self.info.player_greeting(*self.player_data)
 
-        if self.player_data in tools.QUIT_WORDS:
-            return 'quit'
+        if self.player_data == tools.QUIT_WORD:
+            return tools.QUIT_WORD
 
         self.info.end_registration_message(
             player_count=len(self.pl_pool.current_pool)
@@ -85,8 +84,8 @@ class GTMGame:
 
         is_game_starting = self.info.tap_to_game_starting()
 
-        if is_game_starting in tools.QUIT_WORDS:
-            return 'quit'
+        if is_game_starting == tools.QUIT_WORD:
+            return tools.QUIT_WORD
 
     def new_melodie_starting(self):
         """
@@ -100,7 +99,7 @@ class GTMGame:
         if winner:
             self.info.win_message(winner)
             self.info.round_over_message()
-            return 'round'
+            return tools.NEW_ROUND_TEXT
 
         self.info.show_positive_scores(
             positive_scores=self.pl_pool.get_positive_scores()
@@ -128,56 +127,20 @@ class GTMGame:
                 self.pl_pool.excluded_players
             )
 
-            stop_track_text = self.mus_player.track_playback(
-                self.input_deliver
-            )
+            for user_feedback in (
+                    self.mus_player.track_playback(self.input_deliver),
+                    self.get_check_inputting()
+            ):
+                if user_feedback in (tools.NEXT_MELODY_TEXT, tools.QUIT_WORD):
+                    self.mus_player.track_stop_unload()
+                    return user_feedback
 
-            if stop_track_text in tools.QUIT_WORDS:
-                return 'quit'
+            if isinstance(user_feedback, tuple):
 
-            if stop_track_text == 'next':
-                self.mus_player.track_stop_unload()
-                return 'next'
+                checking_result = self.guess_checking(user_feedback)
 
-            player_track_number = self.get_check_inputting()
-
-            if player_track_number in tools.QUIT_WORDS:
-                return 'quit'
-
-            if player_track_number == tools.NEXT_MELODY_TEXT:
-                return 'next'
-
-            if isinstance(player_track_number, tuple):
-
-                is_guessed, player_num, track_num = player_track_number
-
-                self.info.guess_result_message(
-                    player_name=self.pl_pool.current_pool[player_num]['name'],
-                    is_guessed=is_guessed
-                )
-
-                time.sleep(tools.ATTENTION_TIME)
-
-                if is_guessed:
-                    self.pl_pool.current_pool[player_num]['score'] += 1
-                    return 'next'
-
-                else:
-                    ex_track_tpl = self.mus_player.guessable_tracks_list[track_num - 1]
-                    ex_player_name = self.pl_pool.current_pool[player_num]['name']
-
-                    self.mus_player.excluded_tracks.append(
-                        (
-                            track_num,
-                            self.mus_player.file_name_to_title(ex_track_tpl)
-                        )
-                    )
-
-                    self.pl_pool.excluded_players.append((player_num, ex_player_name))
-
-                    if len(self.pl_pool.excluded_players) == len(self.pl_pool.current_pool):
-                        print(tools.no_one_guessed_text + '\n')
-                        return 'next'
+                if checking_result:
+                    return checking_result
 
     @staticmethod
     def input_deliver() -> str:
@@ -217,7 +180,7 @@ class GTMGame:
                 if spl_answer in (
                         tools.NEXT_MELODY_TEXT,
                         tools.CONTINUE_GAME_TEXT,
-                        *tools.QUIT_WORDS
+                        tools.QUIT_WORD
                 ):
                     # Then return this command.
                     return spl_answer
@@ -259,7 +222,11 @@ class GTMGame:
         # number and the gamer number.
         return answers[1] == (current_track_index + 1), *answers
 
-    def is_number_not_correct(self, i: int, answer: int) -> str:
+    def is_number_not_correct(
+            self,
+            i: int,
+            answer: int
+    ) -> Union[None, str]:
         """
         The function checks whether the numbers entered by
         the user exceed the acceptable parameters.
@@ -290,6 +257,53 @@ class GTMGame:
 
         if True in cases:
             return cases[True] + f' or input "{tools.CONTINUE_GAME_TEXT}" to continue the melody.'
+
+    def guess_checking(
+            self,
+            user_feedback: tuple
+    ) -> Union[None, str]:
+        """
+        TODO
+        """
+        is_guessed, player_num, track_num = user_feedback
+
+        self.info.guess_result_message(
+            player_name=self.pl_pool.current_pool[player_num]['name'],
+            is_guessed=is_guessed
+        )
+
+        time.sleep(tools.ATTENTION_TIME)
+
+        if is_guessed:
+            self.pl_pool.current_pool[player_num]['score'] += 1
+            return tools.NEXT_MELODY_TEXT
+
+        else:
+            self.add_new_exclusion(track_num, player_num)
+
+            if len(self.pl_pool.excluded_players) == len(self.pl_pool.current_pool):
+                print(tools.no_one_guessed_text + '\n')
+                return tools.NEXT_MELODY_TEXT
+
+    def add_new_exclusion(
+            self,
+            track_number: int,
+            player_number: int
+    ) -> None:
+        """
+        TODO
+        """
+        ex_track_tpl = self.mus_player.guessable_tracks_list[track_number - 1]
+        ex_player_name = self.pl_pool.current_pool[player_number]['name']
+
+        self.mus_player.excluded_tracks.append(
+            (
+                track_number,
+                self.mus_player.file_name_to_title(ex_track_tpl)
+            )
+        )
+
+        self.pl_pool.excluded_players.append((player_number, ex_player_name))
 
 
 if __name__ == '__main__':

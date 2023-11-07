@@ -23,7 +23,7 @@ class PlayerPool:
 
             spl_text = tools.format_key_text(player_name)
 
-            if spl_text in (tools.STOP_WORD, *tools.QUIT_WORDS):
+            if spl_text in (tools.STOP_WORD, tools.QUIT_WORD):
                 return spl_text
 
             if not self.name_checking(player_name):

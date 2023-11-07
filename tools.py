@@ -1,7 +1,8 @@
-QUIT_WORDS = ('quit', 'exit')
+QUIT_WORD = 'quit'
 STOP_WORD = 'stop'
 NEXT_MELODY_TEXT = 'next'
 CONTINUE_GAME_TEXT = 'continue'
+NEW_ROUND_TEXT = 'round'
 NEW_POOL_TEXT = 'new'
 ATTENTION_TIME = 2
 TRACK_LIST_SIZE = 10
@@ -58,6 +59,14 @@ this_round_over_text = [
     'input “quit”'.ljust(22) + '- to finish'
 ]
 
+signboard = [
+    "   ____                      _____ _            __  __      _           _ _      ",
+    "  / ___|_   _  ___ ___ ___  |_   _| |__   ___  |  \\/  | ___| | ___   __| (_) ___ ",
+    " | |  _| | | |/ _ / __/ __|   | | | '_ \\ / _ \\ | |\\/| |/ _ | |/ _ \\ / _` | |/ _ \\",
+    " | |_| | |_| |  __\\__ \\__ \\   | | | | | |  __/ | |  | |  __| | (_) | (_| | |  __/",
+    "  \\____|\\__,_|\\___|___|___/   |_| |_| |_|\\___| |_|  |_|\\___|_|\\___/ \\__,_|_|\\___|"
+]
+
 rule_text = [
     'THE RULE of the GUESS THE MELODY game',
     '',
@@ -77,7 +86,7 @@ rule_text = [
     'points are awarded to anyone, in this case the next random song will begin.',
     '',
     f'To stop a song early and move on to the next one, enter the word "{NEXT_MELODY_TEXT}".',
-    f'The game continues until 3 points. To exit the game, enter the word "{QUIT_WORDS[0]}"',
+    f'The game continues until 3 points. To exit the game, enter the word "{QUIT_WORD}"',
     'at any time. To stop the song, you can give each player access to independently',
     'press the ENTER key or assign a manager who will stop the song by shouting “STOP”.',
     '',

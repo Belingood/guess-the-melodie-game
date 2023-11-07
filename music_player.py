@@ -119,7 +119,7 @@ class MidiPlayer:
             # Check with the loop if playback has finished.
 
             # Checking time interval.
-            self.pygame_clock.tick(15)
+            self.pygame_clock.tick(30)
 
             text = input_deliver()
 

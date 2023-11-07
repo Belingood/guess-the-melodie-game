@@ -7,26 +7,29 @@ import tools
 class Informer:
 
     @staticmethod
-    def greeting():
+    def greeting() -> None:
         """
         TODO
         """
-
-        for txt in ('🎵 🎶' * 8, '🎵 🎶    GUESS THE MELODIE    🎵 🎶', '🎵 🎶' * 8):
-            print(txt)
+        for line in tools.signboard:
+            print(line)
             time.sleep(0.5)
 
-    def game_over_message(self):
+        time.sleep(0.5)
+
+    def game_over_message(self) -> None:
+        """
+        TODO
+        """
         self.text_into_frame(
             [f'\n{tools.game_over_text}\n'],
             need_printing=True
         )
 
-    def player_registration_intro(self):
+    def player_registration_intro(self) -> None:
         """
         TODO
         """
-
         self.text_into_frame(
             [
                 tools.player_registration_text.upper(),
@@ -36,19 +39,37 @@ class Informer:
         )
 
     @staticmethod
-    def player_greeting(player_number: str, player_name: str):
+    def player_greeting(
+            player_number: str,
+            player_name: str
+    ) -> None:
+        """
+        TODO
+        """
         pgt1, pgt2, pgt3 = tools.player_greeting_text_array.copy()
         print(f'{pgt1} {player_name.upper()}! {pgt2} {player_number}, {pgt3}\n')
 
-    def end_registration_message(self, player_count):
+    def end_registration_message(
+            self,
+            player_count
+    ) -> None:
+        """
+        TODO
+        """
         first, second = tools.players_registered_text
         self.text_into_frame([f'{first} {player_count} {second}'])
 
-    def show_rules(self):
+    def show_rules(self) -> None:
+        """
+        TODO
+        """
         self.text_into_frame(tools.rule_text)
 
     @staticmethod
-    def tap_to_game_starting():
+    def tap_to_game_starting() -> input:
+        """
+        TODO
+        """
         return input(f'{tools.tap_to_game_starting_text}: ')
 
     @staticmethod
@@ -60,7 +81,6 @@ class Informer:
         """
         TODO
         """
-
         spl_text = []
 
         for string in array_of_text_strings:
@@ -126,14 +146,17 @@ class Informer:
         )
 
     @staticmethod
-    def show_guessable_track_titles(track_titles):
+    def show_guessable_track_titles(track_titles: list) -> None:
         """
         TODO
         """
         for i, title in enumerate(track_titles):
             print(i + 1, title)
 
-    def show_positive_scores(self, positive_scores):
+    def show_positive_scores(
+            self,
+            positive_scores: list
+    ) -> None:
         """
         TODO
         """
@@ -155,9 +178,9 @@ class Informer:
 
     def show_excluded_tracks_players(
             self,
-            excluded_tracks,
-            excluded_players
-    ):
+            excluded_tracks: list,
+            excluded_players: list
+    ) -> None:
         """
         TODO
         """
