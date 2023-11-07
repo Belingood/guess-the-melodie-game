@@ -17,7 +17,7 @@ pygame.mixer.music.set_volume(1.0)  # optional volume 0 to 1.0
 
 class MidiPlayer:
     """
-    TODO
+    Class description.
     """
 
     __slots__ = [
