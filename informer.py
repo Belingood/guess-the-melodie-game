@@ -1,17 +1,20 @@
 import time
 from typing import Union
 
-import tools
+import settings
 
 
 class Informer:
+    """
+    TODO
+    """
 
     @staticmethod
     def greeting() -> None:
         """
         TODO
         """
-        for line in tools.signboard:
+        for line in settings.signboard:
             print(line)
             time.sleep(0.5)
 
@@ -22,7 +25,7 @@ class Informer:
         TODO
         """
         self.text_into_frame(
-            [f'\n{tools.game_over_text}\n'],
+            [f'\n{settings.game_over_text}\n'],
             need_printing=True
         )
 
@@ -32,8 +35,8 @@ class Informer:
         """
         self.text_into_frame(
             [
-                tools.player_registration_text.upper(),
-                tools.allowed_name_notice
+                settings.player_registration_text.upper(),
+                settings.allowed_name_notice
             ],
             need_printing=True
         )
@@ -46,7 +49,7 @@ class Informer:
         """
         TODO
         """
-        pgt1, pgt2, pgt3 = tools.player_greeting_text_array.copy()
+        pgt1, pgt2, pgt3 = settings.player_greeting_text_array.copy()
         print(f'{pgt1} {player_name.upper()}! {pgt2} {player_number}, {pgt3}\n')
 
     def end_registration_message(
@@ -56,21 +59,21 @@ class Informer:
         """
         TODO
         """
-        first, second = tools.players_registered_text
+        first, second = settings.players_registered_text
         self.text_into_frame([f'{first} {player_count} {second}'])
 
     def show_rules(self) -> None:
         """
         TODO
         """
-        self.text_into_frame(tools.rule_text)
+        self.text_into_frame(settings.rule_text)
 
     @staticmethod
     def tap_to_game_starting() -> input:
         """
         TODO
         """
-        return input(f'{tools.tap_to_game_starting_text}: ')
+        return input(f'{settings.tap_to_game_starting_text}: ')
 
     @staticmethod
     def text_into_frame(
@@ -163,7 +166,7 @@ class Informer:
         if not positive_scores:
 
             self.text_into_frame(
-                [tools.players_have_0_text],
+                [settings.players_have_0_text],
                 need_printing=True
             )
 
@@ -172,7 +175,7 @@ class Informer:
             ps_srt_by_scores = sorted(ps_srt_by_name, key=lambda x: x[2], reverse=True)
 
             self.show_table_by_array(
-                title_array=tools.positive_scores_title,
+                title_array=settings.positive_scores_title,
                 content_array=list(map(lambda tpl: list(map(str, tpl)), ps_srt_by_scores))
             )
 
@@ -191,7 +194,7 @@ class Informer:
         exclusion_information = []
 
         for ex_track, ex_player in zip(excluded_tracks, excluded_players):
-            # Pair the names of melodies and players from the corresponding arrays.
+            # Pair the names of melodys and players from the corresponding arrays.
 
             # Add the taken ifromation to the corresponding array.
             exclusion_information.append(
@@ -202,7 +205,7 @@ class Informer:
             )
 
         self.show_table_by_array(
-            title_array=tools.exclusion_title,
+            title_array=settings.exclusion_title,
             content_array=exclusion_information
         )
 
@@ -214,7 +217,7 @@ class Informer:
         """
         TODO
         """
-        first, second = tools.congratulation_text if is_guessed else tools.not_guessed_text
+        first, second = settings.congratulation_text if is_guessed else settings.not_guessed_text
         print(f'{first} {player_name}, {second}\n')
 
     def win_message(self, winner_name):
@@ -222,10 +225,17 @@ class Informer:
         TODO
         """
         self.text_into_frame(
-            ['', f'{winner_name.upper()} {tools.win_message}', '']
+            ['', f'{winner_name.upper()} {settings.win_message}', '']
         )
 
-    def round_over_message(self):
-        self.text_into_frame(
-            tools.this_round_over_text
-        )
+    def round_over_message(self, round_number: int) -> None:
+        """
+        TODO
+        """
+        text = settings.this_round_over_text.copy()
+        text[1] = f'The {round_number} {text[1]}'
+        self.text_into_frame(text)
+
+
+def format_key_text(text: str) -> str:
+    return text.strip(" '\"").lower()

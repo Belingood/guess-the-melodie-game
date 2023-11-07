@@ -1,9 +1,18 @@
 from typing import Union
 
-import tools
+import informer
+import settings
 
 
 class PlayerPool:
+    """
+    TODO
+    """
+
+    __slots__ = [
+        'current_pool',
+        'excluded_players'
+    ]
 
     def __init__(self):
 
@@ -21,13 +30,13 @@ class PlayerPool:
 
             player_name = input(f"THE PLAYER {player_number} NAME [or 'stop']: ")
 
-            spl_text = tools.format_key_text(player_name)
+            spl_text = informer.format_key_text(player_name)
 
-            if spl_text in (tools.STOP_WORD, tools.QUIT_WORD):
+            if spl_text in (settings.STOP_WORD, settings.QUIT_WORD):
                 return spl_text
 
             if not self.name_checking(player_name):
-                print(tools.use_letters_text + '\n')
+                print(settings.use_letters_text + '\n')
                 continue
 
             return player_number, player_name
@@ -74,7 +83,7 @@ class PlayerPool:
         """
         for i, player in self.current_pool.items():
             name, scores = player.values()
-            if scores == tools.WIN_POINT:
+            if scores == settings.WIN_POINT:
                 return name
 
     def clear_players_scores(self) -> None:

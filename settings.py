@@ -1,5 +1,5 @@
 PLAYERS_MIN_COUNT = 2
-PLAYERS_MAX_COUNT = 3
+PLAYERS_MAX_COUNT = 20
 QUIT_WORD = 'quit'
 STOP_WORD = 'stop'
 NEXT_MELODY_TEXT = 'next'
@@ -15,16 +15,16 @@ allowed_name_notice = 'Use only letters (at least 1) and characters of space and
 use_letters_text = 'Please use only letters and characters of space and dash.'
 wrong_players_count_text = f'The players count must be from {PLAYERS_MIN_COUNT} to {PLAYERS_MAX_COUNT}.'
 tap_to_game_starting_text = 'Input whatever to START THE GAME or input “quit” to finish the game'
-stop_melodie_text = '🎵 🎶 If anyone guess this melody press ENTER 🎵 🎶: '
+stop_melody_text = '🎵 🎶 If anyone guess this melody press ENTER 🎵 🎶: '
 player_already_answered_text = 'This player already answered, please input another player'
 wrong_player_number_text = 'The wrong player number. Please input another number'
-melodie_already_named_text = 'This melodie already named, please input another melody'
-wrong_melodie_number_text = 'The wrong melodie number. Please input another number'
+melody_already_named_text = 'This melody already named, please input another melody'
+wrong_melody_number_text = 'The wrong melody number. Please input another number'
 input_numbers_only_text = 'Please input numbers only.'
 players_have_0_text = 'ALL PLAYERS HAVE 0 POINTS'
-exclusion_title = ['[✕] EXCLUDED MELODIES', '[✕] EXCLUDED PLAYERS']
+exclusion_title = ['[✕] EXCLUDED melodyS', '[✕] EXCLUDED PLAYERS']
 positive_scores_title = ['PLAYER NUMBER', 'PLAYER NAME', 'PLAYER SCORES']
-no_one_guessed_text = 'Unfortunately no one guessed this melodie, so we are starting the next one.'
+no_one_guessed_text = 'Unfortunately no one guessed this melody, so we are starting the next one.'
 need_new_pool_text = 'Input your choice: '
 win_message = 'won! :)'
 game_over_text = 'THE GAME IS OVER'
@@ -55,7 +55,7 @@ not_guessed_text = [
 
 this_round_over_text = [
     '',
-    'This round is over.',
+    'round is over.',
     '',
     f'input “{NEW_POOL_TEXT}”'.ljust(22) + '- to start a new game with a new players pool',
     'input whatever'.ljust(22) + '- to start a new game with the previouse players pool',
@@ -63,11 +63,14 @@ this_round_over_text = [
 ]
 
 signboard = [
-    "   ____                      _____ _            __  __      _           _ _      ",
-    "  / ___|_   _  ___ ___ ___  |_   _| |__   ___  |  \\/  | ___| | ___   __| (_) ___ ",
-    " | |  _| | | |/ _ / __/ __|   | | | '_ \\ / _ \\ | |\\/| |/ _ | |/ _ \\ / _` | |/ _ \\",
-    " | |_| | |_| |  __\\__ \\__ \\   | | | | | |  __/ | |  | |  __| | (_) | (_| | |  __/",
-    "  \\____|\\__,_|\\___|___|___/   |_| |_| |_|\\___| |_|  |_|\\___|_|\\___/ \\__,_|_|\\___|"
+    "   _____                       _______ _            __  __      _           _       ",
+    "  / ____|                     |__   __| |          |  \\/  |    | |         | |      ",
+    " | |  __ _   _  ___  ___ ___     | |  | |__   ___  | \\  / | ___| | ___   __| |_   _ ",
+    " | | |_ | | | |/ _ \\/ __/ __|    | |  | '_ \\ / _ \\ | |\\/| |/ _ \\ |/ _ \\ / _` | | | |",
+    " | |__| | |_| |  __/\\__ \\__ \\    | |  | | | |  __/ | |  | |  __/ | (_) | (_| | |_| |",
+    "  \\_____|\\__,_|\\___||___/___/    |_|  |_| |_|\\___| |_|  |_|\\___|_|\\___/ \\__,_|\\__, |",
+    "                                                                               __/ |",
+    "                                                                              |___/ "
 ]
 
 rule_text = [
@@ -95,7 +98,3 @@ rule_text = [
     '',
     'Based on the TV show of the same name.'
 ]
-
-
-def format_key_text(text: str) -> str:
-    return text.strip(" '\"").lower()
