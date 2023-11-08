@@ -40,7 +40,7 @@ class GTMGame:
         # Variable for saving data of a registration player.
         self.player_data = ()
 
-    def execute(self):
+    def execute(self) -> None:
         """
         The main function for game executing.
         """
@@ -74,7 +74,7 @@ class GTMGame:
                     # Skip to the beginning of the loop to start playing a new melody.
                     case settings.NEXT_MELODY_TEXT: continue
 
-    def new_round_initiator(self):
+    def new_round_initiator(self) -> Union[None, str]:
         """
         This function performs all the necessary operations
         to prepare and start a new game round.
@@ -112,7 +112,7 @@ class GTMGame:
             # Asking to tap any key to start the game.
             return settings.QUIT_WORD
 
-    def new_melody_starting(self):
+    def new_melody_starting(self) -> Union[None, str]:
         """
         The function selects a random track to guess and places
         it in a list formed from other random tracks at a random
@@ -377,13 +377,13 @@ class GTMGame:
         # key2: If the melody number is greater than a total melodys number.
         """
 
-        def get_nums(array):
+        def get_nums(array: Union[list, dict, tuple]) -> range:
             """
             Returns the serial numbers of the array elements starting from one.
             """
             return range(1, len(array) + 1)
 
-        def get_tpl_nums(tpl_array):
+        def get_tpl_nums(tpl_array: list) -> list:
             """
             Collects the first elements of the tuples in the array into a list.
             """

@@ -1,7 +1,7 @@
 import gtm_game
 
 
-def execute():
+def execute() -> None:
 
     game = gtm_game.GTMGame()
     game.execute()

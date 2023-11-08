@@ -22,7 +22,7 @@ melody_already_named_text = 'This melody already named, please input another mel
 wrong_melody_number_text = 'The wrong melody number. Please input another number'
 input_numbers_only_text = 'Please input numbers only.'
 players_have_0_text = 'ALL PLAYERS HAVE 0 POINTS'
-exclusion_title = ['[✕] EXCLUDED melodyS', '[✕] EXCLUDED PLAYERS']
+exclusion_title = ['[✕] EXCLUDED MELODIES', '[✕] EXCLUDED PLAYERS']
 positive_scores_title = ['PLAYER NUMBER', 'PLAYER NAME', 'PLAYER SCORES']
 no_one_guessed_text = 'Unfortunately no one guessed this melody, so we are starting the next one.'
 need_new_pool_text = 'Input your choice'
@@ -44,10 +44,12 @@ player_track_number_text = [
     'Input the answering player number: ',
     'Input the playing melody number: '
 ]
+
 congratulation_text = [
     ':) Well done',
     'it is the correct answer!'
 ]
+
 not_guessed_text = [
     ':( Sorry',
     'but it is not a correct answer!'
