@@ -9,7 +9,10 @@ import settings
 
 class GTMGame:
     """
-    TODO
+    The class implements the basic procedures of the game.
+    The -execute()- class function contains the main algorithm
+    of the program, in which the main operating functions
+    are divided into more compact execution scripts.
     """
 
     __slots__ = [
@@ -275,7 +278,12 @@ class GTMGame:
     @staticmethod
     def input_deliver() -> str:
         """
-        TODO
+        This function object is passed inside the melody playback
+        function to be activated when the track is played. Calling
+        this function activates the input module, which, having
+        received any input from the user, immediately sends it for
+        further processing in other functions, having previously
+        paused the player.
         """
         return informer.format_key_text(
             input('\n' + settings.stop_melody_text)
@@ -283,7 +291,8 @@ class GTMGame:
 
     def clear_exclusion_data(self) -> None:
         """
-        TODO
+        This fuction clears information about players and erroneous
+        melodies excluded during the previous track playing.
         """
         self.mus_player.excluded_tracks.clear()
         self.pl_pool.excluded_players.clear()
@@ -325,7 +334,7 @@ class GTMGame:
                     print(settings.input_numbers_only_text)
                     continue
 
-                not_correct_number = self.is_number_not_correct(i, spl_answer)
+                not_correct_number = self.is_number_incorrect(i, spl_answer)
 
                 if not_correct_number:
                     # If the function returs a not empty string then it means
@@ -352,7 +361,7 @@ class GTMGame:
         # number and the gamer number.
         return answers[1] == (current_track_index + 1), *answers
 
-    def is_number_not_correct(
+    def is_number_incorrect(
             self,
             i: int,
             answer: int
@@ -369,11 +378,19 @@ class GTMGame:
         """
 
         def get_nums(array):
+            """
+            Returns the serial numbers of the array elements starting from one.
+            """
             return range(1, len(array) + 1)
 
         def get_tpl_nums(tpl_array):
+            """
+            Collects the first elements of the tuples in the array into a list.
+            """
             return list(map(lambda x: x[0], tpl_array))
 
+        # When entering a previously entered number or a number that is outside
+        # the permissible limits, it assigns a corresponding text alert to this variable.
         cases = {
             0: {
                 answer in get_tpl_nums(self.pl_pool.excluded_players): settings.player_already_answered_text,
@@ -386,6 +403,7 @@ class GTMGame:
         }[i]
 
         if True in cases:
+            # If one of the above cases occurs then the allert will be return as a string.
             return cases[True] + f' or input "{settings.CONTINUE_GAME_TEXT}" to continue the melody.'
 
     def guess_checking(
@@ -393,25 +411,44 @@ class GTMGame:
             user_feedback: tuple
     ) -> Union[None, str]:
         """
-        TODO
+        The function receives data about the player’s answers
+        and notifies the user about the correctness of this answer.
+        If the answer is correct, the program adds a point to the
+        player who gave the correct answer. Otherwise, the program
+        adds the player who gave the wrong answer to the exclusion
+        list, which eliminates the possibility of giving repeated
+        answers by this player for the current track. This feature
+        will be restored with the start of a new track.
+        The wrong track is also eliminated so that other players do
+        not select it again.
         """
+        # Unpack the tuple with user data in the next view
+        # (is_answer_correct, player_number, track_number).
         is_guessed, player_num, track_num = user_feedback
 
+        # Inform the user about the result of they guess trying.
         self.info.guess_result_message(
             player_name=self.pl_pool.current_pool[player_num]['name'],
             is_guessed=is_guessed
         )
 
+        # Just time to focus on current information.
         time.sleep(settings.ATTENTION_TIME)
 
         if is_guessed:
+            # If it was guessed successful then increment this player's scores.
+            # And send the order to next track starting.
             self.pl_pool.current_pool[player_num]['score'] += 1
             return settings.NEXT_MELODY_TEXT
 
         else:
+            # If guess trying wasn't successful.
+
+            # Exclude the player and this track to reselect.
             self.add_new_exclusion(track_num, player_num)
 
             if len(self.pl_pool.excluded_players) == len(self.pl_pool.current_pool):
+                # If all the players have answered incorrectly then start the next track.
                 print(settings.no_one_guessed_text + '\n')
                 return settings.NEXT_MELODY_TEXT
 
@@ -421,11 +458,18 @@ class GTMGame:
             player_number: int
     ) -> None:
         """
-        TODO
+        The function, based on the corresponding numbers, receives
+        the name of the erroneous track and the name of the player
+        who selected this track. This information is then placed
+        into appropriate arrays.
         """
+        # Get the incorrect track name by its index in the list.
         ex_track_tpl = self.mus_player.guessable_tracks_list[track_number - 1]
+
+        # Get the player name from player pool dictionary by their number.
         ex_player_name = self.pl_pool.current_pool[player_number]['name']
 
+        # Add the excluded track number and name to the corresponding list as a tuple.
         self.mus_player.excluded_tracks.append(
             (
                 track_number,
@@ -433,6 +477,7 @@ class GTMGame:
             )
         )
 
+        # Add the excluded player number and name to the corresponding list as a tuple.
         self.pl_pool.excluded_players.append((player_number, ex_player_name))
 
 
