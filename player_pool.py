@@ -28,7 +28,12 @@ class PlayerPool:
 
         while True:
 
-            player_name = input(f"THE PLAYER {player_number} NAME [or 'stop']: ")
+            stop_option = {
+                False: '',
+                True: ' [or “stop”]'
+            }[player_number > settings.PLAYERS_MIN_COUNT]
+
+            player_name = input(f'THE PLAYER {player_number} NAME{stop_option}: ')
 
             spl_text = informer.format_key_text(player_name)
 

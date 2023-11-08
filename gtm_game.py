@@ -38,123 +38,139 @@ class GTMGame:
         self.player_data = ()
 
     def execute(self):
+        """
+        The main function for game executing.
+        """
 
+        # Display text greeting.
         self.info.greeting()
+
+        # Displaying the rule of player registration.
         self.info.player_registration_intro()
 
         while True:
+            # The main working loop. On this level starts the new game round.
 
             match self.new_round_initiator():
+                # Finish the game if it has gotten the corresponding order.
                 case settings.QUIT_WORD: return self.info.game_over_message()
 
             while True:
+                # This level starts each melody to be guessed.
 
                 match self.new_melody_starting():
+                    # If it is a winner, and it has an order to start the game again
+                    # then go to the start game level.
                     case settings.NEW_ROUND_TEXT: break
 
                 match self.new_try_to_guess():
+                    # If it has gotten an order to finish the game on
+                    # this try-guess level then finish the game.
                     case settings.QUIT_WORD: return self.info.game_over_message()
+
+                    # Skip to the beginning of the loop to start playing a new melody.
                     case settings.NEXT_MELODY_TEXT: continue
 
     def new_round_initiator(self):
         """
-        TODO
+        This function performs all the necessary operations
+        to prepare and start a new game round.
         """
+        # Increment game-round counter.
         self.round_number += 1
 
         if self.round_number != 1:
+            # If it is not the first round.
 
-            need_new_pool = informer.format_key_text(
-                input(f'{settings.need_new_pool_text}: ')
-            )
-
-            if need_new_pool == settings.QUIT_WORD:
+            if self.ask_for_new_player_pool() == settings.QUIT_WORD:
+                # In this point, program asks a user if they need a new player pool.
                 return settings.QUIT_WORD
 
-            if need_new_pool == settings.NEW_POOL_TEXT:
+        if self.player_registration() == settings.QUIT_WORD:
+            # In this point it has a process of registration.
+            return settings.QUIT_WORD
 
-                self.player_data = ()
-                self.pl_pool.current_pool.clear()
-
-            else:
-                self.pl_pool.clear_players_scores()
-
-        while isinstance(self.player_data, tuple):
-
-            self.player_data = self.pl_pool.player_name_request()
-
-            if not isinstance(self.player_data, str):
-                self.pl_pool.new_player_registration(*self.player_data)
-                self.info.player_greeting(*self.player_data)
-
-            if len(self.pl_pool.current_pool) == settings.PLAYERS_MAX_COUNT:
-                # Players pool overload.
-                break
-
-            else:
-                # It may be only the “stop” or “quit” string.
-
-                if self.player_data == settings.QUIT_WORD:
-                    # “quit” case
-                    return settings.QUIT_WORD
-
-                if len(self.pl_pool.current_pool) < settings.PLAYERS_MIN_COUNT:
-                    # “stop” case
-                    print(settings.wrong_players_count_text)
-                    self.player_data = ()
-
+        # Display the message of the end of the registration process.
         self.info.end_registration_message(
             player_count=len(self.pl_pool.current_pool)
         )
 
+        # Just time to focus on current information.
         time.sleep(settings.ATTENTION_TIME)
 
         if self.round_number == 1:
+            # Display the game rules if it is not the first game round.
             self.info.show_rules()
 
+        # Form a set of tracks from the game repository for the new round.
         self.mus_player.new_round_tracks_setter()
 
-        is_game_starting = self.info.tap_to_game_starting()
-
-        if is_game_starting == settings.QUIT_WORD:
+        if self.info.tap_to_game_starting() == settings.QUIT_WORD:
+            # Asking to tap any key to start the game.
             return settings.QUIT_WORD
 
     def new_melody_starting(self):
         """
-        TODO
+        The function selects a random track to guess and places
+        it in a list formed from other random tracks at a random
+        position. Finally, it loads the file of guessable track into
+        the music player.
         """
 
+        # Clear information about players and erroneous
+        # melodies excluded during the previous track.
         self.clear_exclusion_data()
 
+        # Check if there is a winner.
         winner = self.pl_pool.get_winner()
 
         if winner:
+            # If there is a winner then display a message and play a fanfare,
+            # then inform about the end of the game round and send the “round”
+            # key-word to let know the program it needs the new round initiation.
+
             self.info.win_message(winner)
             self.mus_player.play_fanfare()
             self.info.round_over_message(self.round_number)
             return settings.NEW_ROUND_TEXT
 
+        # If there is no winner yet:
+
+        # Display the players with their positive scores, if any.
         self.info.show_positive_scores(
             positive_scores=self.pl_pool.get_positive_scores()
         )
 
+        # Get and assign to the class attribute another random track.
         self.mus_player.set_random_singer_track()
+
+        # Form and assign to the class attribute another
+        # track list including the guessble melody.
         self.mus_player.set_guessble_tracks_list()
 
+        # Display the resulting track list.
         self.info.show_guessable_track_titles(
             self.mus_player.get_guessable_track_titles()
         )
 
+        # Load the preseted guessble melody.
         self.mus_player.preseted_track_loading()
 
-    def new_try_to_guess(self):
+    def new_try_to_guess(self) -> Union[None, str]:
         """
-        TODO
+        The function, at the user's initiative, stops the
+        playing of a track, receives from him information
+        about his own number and the track number which he
+        thinks is the number of the track being played.
+        Next, the function checks whether the user's answer
+        is correct or not, according to which it activates
+        the procedures provided for each case.
         """
 
         while True:
             # New try to guess.
 
+            # Display a table with ecluded players and tracks, if any.
             self.info.show_excluded_tracks_players(
                 self.mus_player.excluded_tracks,
                 self.pl_pool.excluded_players
@@ -163,21 +179,98 @@ class GTMGame:
             user_input_data = None
 
             for i in range(2):
+                # Execute two functions using a loop.
 
                 match i:
+                    # The first one starts the music player and gets user inputting.
                     case 0: user_input_data = self.mus_player.track_playback(self.input_deliver)
+
+                    # The second one gets and checks inputted by
+                    # user numbers of a track and theyselves.
                     case 1: user_input_data = self.get_check_inputting()
 
                 if user_input_data in (settings.NEXT_MELODY_TEXT, settings.QUIT_WORD):
+                    # If it has gotten any keywords then it stops the music player
+                    # and return these keywords to process on the higher level.
+
                     self.mus_player.track_stop_unload()
                     return user_input_data
 
             if isinstance(user_input_data, tuple):
+                # If the user data is a tuple like (is_answer_correct, player_number, track_number).
 
-                checking_result = self.guess_checking(user_input_data)
+                # User answering result processing.
+                result_checking = self.guess_checking(user_input_data)
 
-                if checking_result:
-                    return checking_result
+                if result_checking:
+                    # If it has gotten any keyword then return it.
+                    return result_checking
+
+    def ask_for_new_player_pool(self) -> Union[None, str]:
+        """
+        At the beginning of each round, with the exception of the first,
+        this function receives information from the user about whether
+        to form a new pool of players or start a new round with the same
+        composition.
+        """
+
+        match informer.format_key_text(
+            input(f'{settings.need_new_pool_text}: ')
+        ):
+            # Ask if they need to create a new player pool
+            # or continue with the previous pool.
+
+            case settings.QUIT_WORD:
+                # If it has gotten the order to quit.
+                return settings.QUIT_WORD
+
+            case settings.NEW_POOL_TEXT:
+                # If it has gotten the order to start
+                # another round with the new player-pool.
+                self.player_data = ()
+                self.pl_pool.current_pool.clear()
+
+            case _:
+                # For other cases. /type(self.player_data) == str/
+                self.pl_pool.clear_players_scores()
+
+    def player_registration(self) -> Union[None, str]:
+        """
+        The function queries each player in turn for their name,
+        assigning each of them their own unique number and
+        registering them in the system.
+        """
+
+        while isinstance(self.player_data, tuple):
+            # If the user data is a tuple like (player_number, player_name).
+
+            if len(self.pl_pool.current_pool) == settings.PLAYERS_MAX_COUNT:
+                # If the players pool is overloaded the leave the registration process
+                # with the existing player count which is the maximum count.
+                return
+
+            self.player_data = self.pl_pool.player_name_request()
+
+            if not isinstance(self.player_data, str):
+                # If user data is not a string then register and greet the new player.
+                self.pl_pool.new_player_registration(*self.player_data)
+                self.info.player_greeting(*self.player_data)
+
+            else:
+                # In this point it may be only the “stop” or “quit” string.
+
+                if self.player_data == settings.QUIT_WORD:
+                    # “quit” case
+                    return settings.QUIT_WORD
+
+                if len(self.pl_pool.current_pool) < settings.PLAYERS_MIN_COUNT:
+                    # “stop” case
+
+                    # Inform the user of the incorrect action and set the class attribute
+                    # to a tuple type (this will prevent the loop from breaking) to continue
+                    # with the registration attempt.
+                    print(settings.wrong_players_count_text)
+                    self.player_data = ()
 
     @staticmethod
     def input_deliver() -> str:

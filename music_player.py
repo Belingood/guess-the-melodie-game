@@ -17,7 +17,9 @@ pygame.mixer.music.set_volume(1.0)  # optional volume 0 to 1.0
 
 class MidiPlayer:
     """
-    Class description.
+    The class is used to play music files, as well
+    as to generate playlists based on files available
+    in the game repository.
     """
 
     __slots__ = [

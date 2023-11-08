@@ -25,7 +25,7 @@ players_have_0_text = 'ALL PLAYERS HAVE 0 POINTS'
 exclusion_title = ['[✕] EXCLUDED melodyS', '[✕] EXCLUDED PLAYERS']
 positive_scores_title = ['PLAYER NUMBER', 'PLAYER NAME', 'PLAYER SCORES']
 no_one_guessed_text = 'Unfortunately no one guessed this melody, so we are starting the next one.'
-need_new_pool_text = 'Input your choice: '
+need_new_pool_text = 'Input your choice'
 win_message = 'won! :)'
 game_over_text = 'THE GAME IS OVER'
 
