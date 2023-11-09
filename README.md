@@ -60,4 +60,8 @@ number of real tracks in the repository.
 > this program can easily be modified for the web version,
 > for example, using Django or Flask frameworks.
 
-![Screenshot of a comment on a GitHub issue showing an image, added in the Markdown, of an Octocat smiling and raising a tentacle.](readme_img/gtm_console.png)
+![Screenshot of a comment on a GitHub issue showing an image, added in the Markdown, of an Octocat smiling and raising a tentacle.](readme_img/gtm_console_1200.png)
+
+> Tested on Windows 10
+
+**Make sure you turn on the speaker system before testing it yourself. :)**
