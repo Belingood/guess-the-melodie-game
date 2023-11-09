@@ -56,7 +56,7 @@ class GTMGame:
 
             match self.new_round_initiator():
                 # Finish the game if it has gotten the corresponding order.
-                case settings.QUIT_WORD: return self.info.game_over_message()
+                case settings.ORDER_QUIT: return self.info.game_over_message()
 
             while True:
                 # This level starts each melody to be guessed.
@@ -64,15 +64,15 @@ class GTMGame:
                 match self.new_melody_starting():
                     # If it is a winner, and it has an order to start the game again
                     # then go to the start game level.
-                    case settings.NEW_ROUND_TEXT: break
+                    case settings.ORDER_NEW_ROUND: break
 
                 match self.new_try_to_guess():
                     # If it has gotten an order to finish the game on
                     # this try-guess level then finish the game.
-                    case settings.QUIT_WORD: return self.info.game_over_message()
+                    case settings.ORDER_QUIT: return self.info.game_over_message()
 
                     # Skip to the beginning of the loop to start playing a new melody.
-                    case settings.NEXT_MELODY_TEXT: continue
+                    case settings.ORDER_NEXT_MELODY: continue
 
     def new_round_initiator(self) -> Union[None, str]:
         """
@@ -85,13 +85,13 @@ class GTMGame:
         if self.round_number != 1:
             # If it is not the first round.
 
-            if self.ask_for_new_player_pool() == settings.QUIT_WORD:
+            if self.ask_for_new_player_pool() == settings.ORDER_QUIT:
                 # In this point, program asks a user if they need a new player pool.
-                return settings.QUIT_WORD
+                return settings.ORDER_QUIT
 
-        if self.player_registration() == settings.QUIT_WORD:
+        if self.player_registration() == settings.ORDER_QUIT:
             # In this point it has a process of registration.
-            return settings.QUIT_WORD
+            return settings.ORDER_QUIT
 
         # Display the message of the end of the registration process.
         self.info.end_registration_message(
@@ -108,9 +108,9 @@ class GTMGame:
         # Form a set of tracks from the game repository for the new round.
         self.mus_player.new_round_tracks_setter()
 
-        if self.info.tap_to_game_starting() == settings.QUIT_WORD:
+        if self.info.tap_to_game_starting() == settings.ORDER_QUIT:
             # Asking to tap any key to start the game.
-            return settings.QUIT_WORD
+            return settings.ORDER_QUIT
 
     def new_melody_starting(self) -> Union[None, str]:
         """
@@ -135,7 +135,7 @@ class GTMGame:
             self.info.win_message(winner)
             self.mus_player.play_fanfare()
             self.info.round_over_message(self.round_number)
-            return settings.NEW_ROUND_TEXT
+            return settings.ORDER_NEW_ROUND
 
         # If there is no winner yet:
 
@@ -192,7 +192,7 @@ class GTMGame:
                     # user numbers of a track and theyselves.
                     case 1: user_input_data = self.get_check_inputting()
 
-                if user_input_data in (settings.NEXT_MELODY_TEXT, settings.QUIT_WORD):
+                if user_input_data in (settings.ORDER_NEXT_MELODY, settings.ORDER_QUIT):
                     # If it has gotten any keywords then it stops the music player
                     # and return these keywords to process on the higher level.
 
@@ -223,11 +223,11 @@ class GTMGame:
             # Ask if they need to create a new player pool
             # or continue with the previous pool.
 
-            case settings.QUIT_WORD:
+            case settings.ORDER_QUIT:
                 # If it has gotten the order to quit.
-                return settings.QUIT_WORD
+                return settings.ORDER_QUIT
 
-            case settings.NEW_POOL_TEXT:
+            case settings.ORDER_NEW_POOL:
                 # If it has gotten the order to start
                 # another round with the new player-pool.
                 self.player_data = ()
@@ -262,9 +262,9 @@ class GTMGame:
             else:
                 # In this point it may be only the “stop” or “quit” string.
 
-                if self.player_data == settings.QUIT_WORD:
+                if self.player_data == settings.ORDER_QUIT:
                     # “quit” case
-                    return settings.QUIT_WORD
+                    return settings.ORDER_QUIT
 
                 if len(self.pl_pool.current_pool) < settings.PLAYERS_MIN_COUNT:
                     # “stop” case
@@ -317,9 +317,9 @@ class GTMGame:
 
                 # If the text is equal to commands below.
                 if spl_answer in (
-                        settings.NEXT_MELODY_TEXT,
-                        settings.CONTINUE_GAME_TEXT,
-                        settings.QUIT_WORD
+                        settings.ORDER_NEXT_MELODY,
+                        settings.ORDER_CONTINUE_GAME,
+                        settings.ORDER_QUIT
                 ):
                     # Then return this command.
                     return spl_answer
@@ -404,7 +404,7 @@ class GTMGame:
 
         if True in cases:
             # If one of the above cases occurs then the allert will be return as a string.
-            return cases[True] + f' or input "{settings.CONTINUE_GAME_TEXT}" to continue the melody.'
+            return cases[True] + f' or input "{settings.ORDER_CONTINUE_GAME}" to continue the melody.'
 
     def guess_checking(
             self,
@@ -439,7 +439,7 @@ class GTMGame:
             # If it was guessed successful then increment this player's scores.
             # And send the order to next track starting.
             self.pl_pool.current_pool[player_num]['score'] += 1
-            return settings.NEXT_MELODY_TEXT
+            return settings.ORDER_NEXT_MELODY
 
         else:
             # If guess trying wasn't successful.
@@ -450,7 +450,7 @@ class GTMGame:
             if len(self.pl_pool.excluded_players) == len(self.pl_pool.current_pool):
                 # If all the players have answered incorrectly then start the next track.
                 print(settings.no_one_guessed_text + '\n')
-                return settings.NEXT_MELODY_TEXT
+                return settings.ORDER_NEXT_MELODY
 
     def add_new_exclusion(
             self,

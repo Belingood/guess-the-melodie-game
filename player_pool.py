@@ -49,7 +49,7 @@ class PlayerPool:
             # Formatted inputting.
             spl_text = informer.format_key_text(player_name)
 
-            if spl_text in (settings.STOP_WORD, settings.QUIT_WORD):
+            if spl_text in (settings.ORDER_STOP, settings.ORDER_QUIT):
                 # If the user inputted one of the provided commands,
                 # then send it for appropriate processing.
                 return spl_text
