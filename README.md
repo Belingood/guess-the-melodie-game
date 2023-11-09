@@ -1,5 +1,3 @@
-# 56 tracks of 1.67 Mb
-
 # GUESS THE MELODY
 ___
 ### Console game
