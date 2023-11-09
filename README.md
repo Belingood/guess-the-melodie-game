@@ -59,3 +59,5 @@ number of real tracks in the repository.
 > was one of the technical requirements of the task. However,
 > this program can easily be modified for the web version,
 > for example, using Django or Flask frameworks.
+
+![Screenshot of a comment on a GitHub issue showing an image, added in the Markdown, of an Octocat smiling and raising a tentacle.](readme_img/gtm_console.png)

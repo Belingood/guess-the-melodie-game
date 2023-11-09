@@ -36,7 +36,7 @@ class MidiPlayer:
     def __init__(self):
 
         # The main directory path.
-        self.main_directory = os.getcwd()
+        self.main_directory = os.path.dirname(os.path.abspath(__file__))
 
         # The pygame clock object for checking the melody playback status.
         self.pygame_clock = pygame.time.Clock()
@@ -79,20 +79,20 @@ class MidiPlayer:
         # directories and content arrays of these directories.
         midi_store_gen = os.walk(midi_directory)
 
-        # The array of names of all singers (folder names).
-        all_singers = next(el for i, el in enumerate(next(midi_store_gen)) if i == 1)
+        # The generator of names of all singers (folder names).
+        all_singers = (elm for i, elm in enumerate(next(midi_store_gen)) if i == 1)
 
         # The array with arrays of tracks.
-        all_track_arrays = [el[-1] for el in midi_store_gen]
+        all_track_arrays = (el[-1] for el in midi_store_gen)
 
         # The empty array for tuples like (singer_name, track_name)
         # of all tracks in the game repository.
         singers_tracks_tuples = []
 
-        for i, singer in enumerate(all_singers):
+        for singer in next(all_singers):
             # Get the index and name of folder (folders are named after the singers)
 
-            for track in all_track_arrays[i]:
+            for track in next(all_track_arrays):
                 # Go throu the current singer tracks
                 # (singer track array has the same index to singer name in singer names array).
 
@@ -140,11 +140,13 @@ class MidiPlayer:
 
         match library:
             # If not -library- data then build a path to the playing track repository.
-            case None: target_path = ('sound_library', *self.current_singer_track_tuple)
+            case None:
+                target_path = ('sound_library', *self.current_singer_track_tuple)
 
             # If -library- has any string path then replace all slashes and form a list
             # by spaces to build the path by -os.path.join()- method.
-            case _: target_path = library.replace('/', ' ').replace('\\', ' ').split(' ')
+            case _:
+                target_path = library.replace('/', ' ').replace('\\', ' ').split(' ')
 
         # Get the path of the playing melody.
         track_path = os.path.join(
