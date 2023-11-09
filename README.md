@@ -45,6 +45,14 @@ two main reasons:
 - When using MIDI files, all melodies sound in the same style.
 - MIDI files take up a small amount of memory. For example, the 56 tracks used in this basic version occupy about 1.56 MB of memory.
 
+Files for playing melodies that need to be guessed are located
+in the `sound_library` folder. In the game repository there is also
+a `extra_sound_library` folder, which contains empty midi files
+that serve to reduce the repetition of names in the list of tracks,
+which is shown as a hint. It is not necessary to use this directory
+with pseudo tracks, but it is recommended if there is a small 
+number of real tracks in the repository.
+
 > The game process takes place in the system console, as this
 > was one of the technical requirements of the task. However,
 > this program can easily be modified for the web version,
