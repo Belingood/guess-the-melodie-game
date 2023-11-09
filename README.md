@@ -64,4 +64,4 @@ number of real tracks in the repository.
 
 > Tested on Windows 10
 
-**Make sure you turn on the speaker system before testing it yourself. :)**
+**Make sure you turn on the speaker system before testing it yourself :)**
