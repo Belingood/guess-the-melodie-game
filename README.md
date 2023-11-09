@@ -1,10 +1,12 @@
 # GUESS THE MELODY
 ___
+#### 0.0.1
+
 ### Console game
 
 #
 
-#### THE GAME RULE
+#### THE GAME DESCRIPTION
 
 > From 2 to 20 people (this can be changed in the `settings.py` file)
 > take part in the game. When the game starts,
@@ -47,7 +49,7 @@ two main reasons:
 
 Files for playing melodies that need to be guessed are located
 in the `sound_library` folder. In the game repository there is also
-a `extra_sound_library` folder, which contains empty midi files
+an `extra_sound_library` folder, which contains empty midi files
 that serve to reduce the repetition of names in the list of tracks,
 which is shown as a hint. It is not necessary to use this directory
 with pseudo tracks, but it is recommended if there is a small 

@@ -259,8 +259,8 @@ class Informer:
             # Add the taken ifromation to the corresponding array.
             exclusion_information.append(
                 [
-                    f'[✕] {ex_track[0]}. {ex_track[1]}',
-                    f'[✕] {ex_player[0]}. {ex_player[1]}'
+                    f'[x] {ex_track[0]}. {ex_track[1]}',
+                    f'[x] {ex_player[0]}. {ex_player[1]}'
                 ]
             )
 
